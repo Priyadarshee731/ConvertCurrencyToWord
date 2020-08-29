@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      var th = ["", "Thousand", "Lakh"];
+
+      var dg = [
+        "Zero",
+        "One",
+        "Two",
+        "Three",
+        "Four",
+        "Five",
+        "Six",
+        "Seven",
+        "Eight",
+        "Nine",
+      ];
+
+      var tn = [
+        "Ten",
+        "Eleven",
+        "Twelve",
+        "Thirteen",
+        "Fourteen",
+        "Fifteen",
+        "Sixteen",
+        "Seventeen",
+        "Eighteen",
+        "Nineteen",
+      ];
+
+      var tw = [
+        "Twenty",
+        "Thirty",
+        "Forty",
+        "Fifty",
+        "Sixty",
+        "Seventy",
+        "Eighty",
+        "Ninety",
+      ];
+
+      function convertToWord() {
+        var currency = document.getElementById("currency").value.toString();
+        var unsupportedCurrency;
+        var currencyInWord;
+
+        var rupee = currency.split(".")[0];
+
+        var paisa = currency.split(".")[1];
+
+        rupee = rupee.replace(/[\, ]/g, "");
+
+        var str = "";
+        var sk = 0;
+
+        if (rupee != parseFloat(rupee))
+          unsupportedCurrency = "Please enter a number";
+
+        let x = rupee.indexOf(".");
+
+        if (x == -1) {
+          x = rupee.length;
+        }
+
+        if (x > 6) {
+          unsupportedCurrency =
+            "Please enter a currency value within 00 to 999999.99";
+        }
+
+        let n = rupee.split("");
+
+        let length = n.length;
+
+        for (let i = 0; i < x; i++) {
+          if ((x - i) % 3 == 2) {
+            if (n[i] == "1") {
+              str += tn[Number(n[i + 1])] + " ";
+              i++;
+              sk = 1;
+            } else if (n[i] != 0) {
+              str += tw[n[i] - 2] + " ";
+              sk = 1;
+            }
+          } else if (n[i] != 0) {
+            str += dg[n[i]] + " ";
+
+            length = length - 1;
+
+            if ((x - i) % 3 == 0 && length < 5) {
+              str += "Hundred ";
+            }
+
+            if ((x - i) % 3 == 0 && length >= 5) {
+              str += "Lakh ";
+            }
+
+            sk = 1;
+          }
+
+          if ((x - i) % 3 == 1) {
+            if (sk) {
+              str += th[(x - i - 1) / 3] + " ";
+              sk = 0;
+            }
+          }
+        }
+
+        if (x != rupee.length) {
+          var y = rupee.length;
+          str += "point ";
+        }
+
+        if (!unsupportedCurrency) {
+          currencyInWord = "Rs. " + str;
+
+          if (paisa) {
+            currencyInWord += " " + paisa + "/100";
+          }
+
+          document.getElementById("currencyInWord").innerHTML =
+            currencyInWord + " ONLY";
+        } else {
+          document.getElementById(
+            "currencyInWord"
+          ).innerHTML = unsupportedCurrency;
+        }
+      }
+    </script>
+
+    <style>
+      body {
+        background: whitesmoke;
+      }
+
+      .input {
+        height: 40px;
+        width: 300px;
+        padding: 6px;
+      }
+
+      h1 {
+        color: darkgreen;
+      }
+
+      button {
+        background-color: darkslategray;
+        color: white;
+        height: 40px;
+        width: 125px;
+      }
+
+      h3 {
+        color: darkslategray;
+      }
+
+      h2 {
+        color: green;
+      }
+
+      hr {
+        height: 20px;
+        background: darkgray;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 color="navy">CONVERSION OF CURRENCY VALUE FROM NUMBER TO WORD</h1>
+
+    <hr/>
+
+    <h3>Enter currency in number:</h3>
+
+    <input
+      type="text"
+      class="input"
+      name="currency"
+      placeholder="Ex: 123456.78"
+      id="currency"/>
+
+    <h2 id="currencyInWord"></h2>
+    <br/>
+    <button type="button" onclick="convertToWord()">Convert</button>
+  </body>
+</html>
